@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <style>
+        h1 {
+            font-size: 20pt;
+            margin : 0;
+        }
+        h2 {
+            font-size: 16pt;
+            margin : 0;
+        }
+        .mdl-list__item {
+            height: 30px;
+        }
+        .mdl-textfield {
+            width: 100%;
+        }
+        .mdl-layout {
+            margin-top : 15px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 90%;
+            max-width: 960px;            
+        }
+        .mdl-textfield {
+            width: 100%;
+        }
+        .mdl-textfield__input {
+            width: 92%;
+            border-radius : 5px;
+            padding : 15px;
+            border: solid 1px lightgrey;
+        }
+        .mdl-button {
+            border-radius : 5px;
+            height: 40px;
+        }
+        .material-icons {
+            color : gray;
+            width: 40px;
+        }
+    </style>
+    <title>Demo 2</title>
+</head>
+<body>
+
+    <div class="mdl-layout">
+
+    <h1>Demo 2: Lomakkeiden käsittely</h1>
+
+    <h2>Ostoslista</h2>
+    
+    <ul class="mdl-list">
+
+    <% ostokset.forEach((ostos) => { %>
+
+        <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+                <a href="/poimittu/?id=<%=ostos.id%>&poimittu=<%=ostos.poimittu%>">
+                <% if (ostos.poimittu) {%>
+                <i class="material-icons">check_box</i>
+                <% } else { %>
+                <i class="material-icons">check_box_outline_blank</i>
+                <% } %>
+                </a>
+                <span>
+                    <%= ostos.tuote %>
+                </span>
+            </span>
+            <form method="POST" action="/poista">
+
+                <input type="hidden" name="id" value="<%= ostos.id %>">
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-list__item-secondary-action">
+                    <i class="material-icons">delete</i>
+                </button>
+            </form>
+        </li>
+
+    <% }) %> 
+
+    </ul>
+
+    <form method="POST" action="/">
+
+        <div class="mdl-textfield">
+            <input class="mdl-textfield__input" type="text" name="tuote" placeholder="Kirjoita tuote...">
+        </div>
+
+        <button type="submit" class="mdl-button mdl-button--raised mdl-button--primary" style="width: 100%">
+            Lisää tuote ostoslistaan
+        </button>
+
+    </form>
+
+    </div>
+
+</body>
+</html>

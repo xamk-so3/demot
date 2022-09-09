@@ -1,0 +1,38 @@
+h1, h2 {
+    font-size: 20pt;
+    margin: 0;
+}
+h2 {
+    font-size: 14pt;
+}
+.mdl-layout {
+    width: 90%;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px; 
+}
+.mdl-button {
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.mdl-textfield {
+    width: 92%;    
+}
+.mdl-textfield__input {
+    border: solid 1px lightgrey;
+    border-radius: 5px;
+    padding: 15px;   
+}
+.mdl-textfield__label {
+    color : #999;
+    top: -5px;
+}
+.virhe {
+    color: red;
+    border: solid 1px red;
+    border-radius: 5px;
+    background-color: lightpink;   
+    margin-bottom: 20px; 
+    padding: 20px;
+}

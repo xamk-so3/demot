@@ -1,0 +1,28 @@
+<%- include("includes/header") %>
+
+    <h2>Lisää uusi kuva galleriaan</h2>
+
+    <% if (Boolean(virhe)) { %>
+
+        <div class="virhe"><%=virhe%></div>
+
+    <% } %>
+
+    <form method="POST" action="/lisaa" enctype="multipart/form-data">
+
+        <div class="mdl-textfield">
+            <input class="mdl-textfield__input" type="text" name="teksti" id="teksti" value="<%=teksti%>">
+            <label class="mdl-textfield__label" for="teksti">Kuvateksti</label>            
+        </div>
+
+        <div class="mdl-textfield">
+            <input class="mdl-textfield__input" type="file" name="tiedosto" id="tiedosto">
+            <label class="mdl-textfield__label" for="tiedosto">Tiedosto</label>            
+        </div>
+
+        <button type="submit" class="mdl-button mdl-button--raised mdl-button--colored">Lisää kuva</button>
+        <a href="/" class="mdl-button mdl-button--raised">Peruuta</a>
+
+    </form>
+
+<%- include("includes/footer") %>

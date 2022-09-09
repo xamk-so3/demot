@@ -1,0 +1,23 @@
+<%- include("includes/header") %>
+
+        <h2>Kuvagalleria</h2>
+
+        <a href="/lisaa" class="mdl-button mdl-button--raised mdl-button--colored">Lisää uusi kuva galleriaan</a>
+
+        <% if (kuvat.length > 0) {%>
+
+            <% kuvat.forEach((kuva) => { %>
+
+                <h4><%= kuva.teksti %></h4>
+
+                <img src="/img/<%= kuva.tiedosto %>" alt="<%= kuva.tiedosto %>">
+
+            <%});%>
+
+        <% } else { %>
+
+            Ei kuvia.
+
+        <% } %>
+
+<%- include("includes/footer") %>

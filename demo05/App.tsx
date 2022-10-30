@@ -5,7 +5,7 @@ import * as Device from 'expo-device';
 import * as Battery from 'expo-battery';
 import { useEffect, useState } from 'react';
 
-export default function App() {
+const App : React.FC = () : React.ReactElement => {
 
   const [akkulataus, setAkkulataus] = useState<number>();
   const [latauksessa, setLatauksessa] = useState<string>();
@@ -62,3 +62,5 @@ export default function App() {
     </>
   );
 }
+
+export default App;

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "nimi": "Käy kaupassa",
+    "suoritettu": false
+  },
+  {
+    "id": 2,
+    "nimi": "Siivoa",
+    "suoritettu": false
+  }
+]

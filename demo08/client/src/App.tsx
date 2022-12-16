@@ -1,19 +1,32 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import KokoUutinen from './components/KokoUutinen';
-import UutisLista from './components/UutisLista';
-import Valikko from './components/Valikko';
-import { UutinenProvider } from './context/UutinenContext';
+import React, { useContext } from 'react';
+import { Button, Container, Stack } from '@mui/material';
+import Otsikko from './components/Otsikko';
+import Tehtavalista from './components/Tehtavalista';
+import LisaaTehtava from './components/LisaaTehtava';
+import { TehtavaContext } from './context/TehtavaContext';
 
-const App : React.FC = () : React.ReactElement => {
+
+function App() {
+
+  const { setLisaysDialogi } = useContext(TehtavaContext);
+
   return (
-    <UutinenProvider>
-      <Valikko />
-      <Routes>
-        <Route path="/" element={<UutisLista/>} />
-        <Route path="/uutinen/:id" element={<KokoUutinen />} />
-      </Routes>
-    </UutinenProvider>
+    <Container>
+      <Stack spacing={2}>
+              
+      <Otsikko />
+
+      <Button 
+        variant="contained"
+        onClick={() => setLisaysDialogi(true)}
+      >Lisää uusi tehtävä</Button>
+
+      <Tehtavalista/>
+
+      <LisaaTehtava/>
+
+      </Stack>
+    </Container>
   );
 }
 

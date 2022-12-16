@@ -1,0 +1,12 @@
+[
+  {
+    "id": "4a606aab-351b-4e70-b5c4-8f590d263fcd",
+    "nimi": "Käy kaupassa",
+    "suoritettu": false
+  },
+  {
+    "id": "3077b3a4-13d0-4654-93de-10f84414d098",
+    "nimi": "Siivoa",
+    "suoritettu": true
+  }
+]

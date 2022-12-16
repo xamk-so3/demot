@@ -1,79 +1,50 @@
 import express from 'express';
 import cors from 'cors';
-import axios from 'axios';
-import Parser from 'rss-parser';
-import {format, parseISO} from 'date-fns';
+import path from 'path';
+import fs from 'fs/promises';
 
 const app : express.Application = express();
 
 const portti : number = Number(process.env.PORT) || 3001;
-
-const parser : Parser = new Parser();
-
-export interface Uutinen {
-    otsikko : string,
-    sisalto : string,
-    julkaistu : Date,
-    kuva : string,
-    linkki : string
-}
 
 app.use(cors({
     "origin" : "http://localhost:3000",
     "optionsSuccessStatus" : 200 
 }));
 
-app.get("/api/uutiset", async (req : express.Request, res : express.Response) : Promise<void>=> {
+app.use(express.json());
 
-    try  {
+app.post("/api/tehtavalista", async (req : express.Request, res : express.Response) : Promise<void>=> {
 
-        let uutiset : Uutinen[] = await haeUutiset("https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET");
+    await fs.writeFile(path.resolve(__dirname, "data", "tehtavalista.json"), JSON.stringify(req.body.tehtavat, null, 2), {encoding : "utf-8"});
 
-        res.json(uutiset);
+    res.json({});
 
-    } catch (e : any) {
+});
 
-        res.status(500).json({ virhe : e })
+app.get("/api/tehtavalista", async (req : express.Request, res : express.Response) : Promise<void>=> {
+
+    let data : any[] = [];
+
+    try {
+
+        let jsonStr = await fs.readFile(path.resolve(__dirname, "data", "tehtavalista.json"), {encoding : "utf-8"});
+
+        data = JSON.parse(jsonStr);
+
+    } catch (e: any) {
+
+        res.json({virhe : "Tiedoston sisältämä data on korruptoitunut. Tietojen lukeminen ei onnistu."});
 
     }
+
+    res.json(data);
 
 });
 
 app.listen(portti, () => {
 
-    console.log(`Palvelin käynnistyi porttiin: ${portti}`);
+    console.log(`Palvelin käynnistyi osoitteeseen: http://localhost:${portti}/api/tehtavalista`);
 
 });
 
-const haeUutiset = (url : string) => {
-
-    return new Promise(async (resolve : (uutiset: Uutinen[]) => void, reject : (virhe : string) => void) => {
-
-        try {
-
-            let yhteys = await axios.get(url);            
-
-            let rssFeed : any = await parser.parseString(yhteys.data);
-
-            let uutiset : Uutinen[] = rssFeed.items.map((item : any) => {
-                return {
-                        id : format(parseISO(item.isoDate), "T"),
-                        otsikko : item.title,
-                        sisalto : item.contentSnippet,
-                        julkaistu : parseISO(item.isoDate),
-                        kuva : (item.enclosure) ? item.enclosure.url : "http://localhost:3009/eikuvaa.png",
-                        linkki : item.link
-                       }
-            });
-
-            resolve(uutiset);
-
-        } catch (e : any) {
-
-            reject(`RSS-feediin ${url} ei saada yhteyttä`);
-
-        }
-
-    });
-
-} 

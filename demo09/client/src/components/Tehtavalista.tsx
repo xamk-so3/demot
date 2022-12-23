@@ -1,38 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
 import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBox from '@mui/icons-material/CheckBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { AppDispatch, RootState } from '../redux/store';
-import { haeTehtavat, tallennaTehtavat, Tehtava, vaihdaSuoritettu } from '../redux/tehtavalistaSlice';
 import PoistaTehtava from './PoistaTehtava';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
+import { useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { avaaPoistoDialogi, tallennaTehtavat, Tehtava, vaihdaSuoritus } from '../redux/tehtavalistaSlice';
+import { useDispatch } from 'react-redux/es/exports';
 
 const Tehtavalista : React.FC = () : React.ReactElement => {
 
-  const haettu : React.MutableRefObject<boolean> = useRef<boolean>(false);
-
-  const [poistoDialogi, setPoistoDialogi] = useState<any>({
-                                                            tehtava : {},
-                                                            auki : false
-                                                          });
-
-  const tehtavat = useSelector((state : RootState) => state.tehtavalista.tehtavat);
+  const tehtavat : Tehtava[] = useSelector((state: RootState) => state.tehtavalista.tehtavat);
 
   const dispatch : AppDispatch = useDispatch();
-
-  useEffect(() => {
-
-    if (!haettu.current) {
-
-      dispatch(haeTehtavat());
-
-    }
-
-    return () => { haettu.current = true }
-
-  }, [dispatch]);
 
   return (
     <>
@@ -41,7 +22,7 @@ const Tehtavalista : React.FC = () : React.ReactElement => {
         return (<ListItem
                     key={idx}
                     secondaryAction={<IconButton
-                                        onClick={() => setPoistoDialogi({tehtava : tehtava, auki : true})}
+                                        onClick={() => dispatch(avaaPoistoDialogi({ auki : true, tehtava : tehtava}))}
                                       >
                                         <DeleteIcon />
                                       </IconButton>}
@@ -49,7 +30,7 @@ const Tehtavalista : React.FC = () : React.ReactElement => {
                   <ListItemIcon>
                   <IconButton
                     onClick={() => {
-                      dispatch(vaihdaSuoritettu(tehtava.id));
+                      dispatch(vaihdaSuoritus(tehtava.id));
                       dispatch(tallennaTehtavat());
                     }}
                   >
@@ -62,7 +43,7 @@ const Tehtavalista : React.FC = () : React.ReactElement => {
                 </ListItem>)
       })}
     </List>
-    <PoistaTehtava poistoDialogi={poistoDialogi} setPoistoDialogi={setPoistoDialogi}/>
+    <PoistaTehtava />
     </>
   )
 }

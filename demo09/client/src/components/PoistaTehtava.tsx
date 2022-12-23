@@ -1,47 +1,41 @@
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import React from 'react'
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../redux/store';
-import { poistaTehtava, tallennaTehtavat, Tehtava } from '../redux/tehtavalistaSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { avaaPoistoDialogi, poistaTehtava, tallennaTehtavat } from '../redux/tehtavalistaSlice';
 
-interface Props {
+const PoistaTehtava : React.FC = () : React.ReactElement => {
 
-  poistoDialogi : {
-    tehtava : Tehtava,
-    auki : boolean
-  },
-  setPoistoDialogi : (arg0 : any) => void
-
-}
-
-const PoistaTehtava : React.FC<Props> = (props : Props) : React.ReactElement => {
+  const poistoDialogi : any = useSelector((state : RootState) => state.tehtavalista.poistoDialogi );
 
   const dispatch : AppDispatch = useDispatch();
 
-  const kasittelePoisto = () => {
-
-    dispatch(poistaTehtava(props.poistoDialogi.tehtava.id));
-    dispatch(tallennaTehtavat());
+  const kasittelePoisto = (poistettavaId : string) => {
     
-    props.setPoistoDialogi({...props.poistoDialogi, auki : false});
+    dispatch(poistaTehtava(poistettavaId));
+    dispatch(tallennaTehtavat());
+    dispatch(avaaPoistoDialogi({auki : false, tehtava : {}}))
 
   }
 
   return (
     <Dialog
-    open={props.poistoDialogi.auki}
-    onClose={() => props.setPoistoDialogi({...props.poistoDialogi, auki : false})}
-    fullWidth={true}
+      open={poistoDialogi.auki}
+      onClose={() => dispatch(avaaPoistoDialogi({auki : false, tehtava : {}}))}
+      fullWidth={true}
+      PaperProps={{ sx: { position: "fixed", top: 100} }}
     >
     <DialogTitle>
       Poista tehtävä
     </DialogTitle>
     <DialogContent>
-      Haluatko varmasti poistaa tehtävän: "{props.poistoDialogi.tehtava.nimi}"?
+      <Typography>
+      Haluatko varmasti poistaa tehtävän: "{poistoDialogi.tehtava.nimi}"?
+      </Typography>
     </DialogContent>
     <DialogActions>
-      <Button onClick={kasittelePoisto}>Poista</Button>
-      <Button onClick={() => props.setPoistoDialogi({...props.poistoDialogi, auki : false})}>Peruuta</Button>
+      <Button onClick={() => kasittelePoisto(poistoDialogi.tehtava.id)}>Poista</Button>
+      <Button onClick={() => dispatch(avaaPoistoDialogi({auki : false, tehtava : {}}))}>Peruuta</Button>
     </DialogActions>
   </Dialog>
   )

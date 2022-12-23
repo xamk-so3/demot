@@ -1,15 +1,13 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const haeTehtavat = createAsyncThunk("tehtavalista/haeTehtavat", async () => {
 
     const yhteys = await fetch("http://localhost:3001/api/tehtavalista");
-    return await yhteys.json();
+    return await yhteys.json();  
 
 });
 
 export const tallennaTehtavat = createAsyncThunk("tehtavalista/tallennaTehtavat", async (payload, {getState}) => {
-
-    console.log(getState());
 
     const yhteys = await fetch("http://localhost:3001/api/tehtavalista", {
         method : "POST",
@@ -28,39 +26,57 @@ export interface Tehtava {
     suoritettu : boolean
   }
 
+interface State {
+    tehtavat : Tehtava[];
+    lisaysDialogi : boolean;
+    poistoDialogi : {
+        auki : boolean;
+        tehtava : Tehtava;
+    }
+}
+
 const tehtavat : Tehtava[] = [];
 
 export const tehtavalistaSlice = createSlice({
     name : "tehtavalista",
-    initialState : { tehtavat : [...tehtavat] },
+    initialState : { 
+        tehtavat : [...tehtavat],
+        lisaysDialogi : false,
+        poistoDialogi : {
+            auki : false,
+            tehtava : {}
+        }
+    } as State,
     reducers : {
-        lisaaTehtava : (state, action: PayloadAction<Tehtava>) => {
-            state.tehtavat = [...state.tehtavat, action.payload];
+        lisaaTehtava : (state : State, action : PayloadAction<Tehtava>) => {
+            state.tehtavat = [...state.tehtavat, action.payload]
         },
-        vaihdaSuoritettu : (state, action: PayloadAction<string>) => {
+        poistaTehtava : (state : State, action : PayloadAction<string>) => {
+            state.tehtavat = [...state.tehtavat.filter((tehtava : Tehtava) => tehtava.id !== action.payload)]
+        },
+        vaihdaSuoritus : (state : State, action : PayloadAction<string>) => {
 
-            let vaihdettava : Tehtava = {...state.tehtavat.find((tehtava : Tehtava) => tehtava.id === action.payload)!};
+            let idx : number = state.tehtavat.findIndex((tehtava : Tehtava) => tehtava.id === action.payload);
 
-            state.tehtavat.splice(state.tehtavat.findIndex((tehtava : Tehtava) => tehtava.id === action.payload),
-                                  1, 
-                                  {...vaihdettava, suoritettu : !vaihdettava.suoritettu});
+            state.tehtavat[idx].suoritettu = !state.tehtavat[idx].suoritettu;
 
         },
-        poistaTehtava : (state, action: PayloadAction<string>) => {
-
-           state.tehtavat.splice(state.tehtavat.findIndex((tehtava : Tehtava) => tehtava.id === action.payload), 1);
-
+        avaaLisaysDialogi : (state : State, action : PayloadAction<boolean>) => {
+            state.lisaysDialogi = action.payload;
+        },
+        avaaPoistoDialogi : (state : State, action : PayloadAction<any>) => {
+            state.poistoDialogi = action.payload;
         }
     },
-    extraReducers : (builder) => {
-        builder.addCase(haeTehtavat.fulfilled, (state, action) => {
+    extraReducers : (builder : any) => {
+        builder.addCase(haeTehtavat.fulfilled, (state : State, action : PayloadAction<Tehtava[]>) => {
             state.tehtavat = action.payload;
-        }).addCase(tallennaTehtavat.fulfilled, () => {
-            console.log("Tallennettu!");
-        });
+        }).addCase(tallennaTehtavat.fulfilled, (state : State, action : PayloadAction<any>) => {
+            console.log("Tallennettu!")
+        })
     }
 });
 
-export const { lisaaTehtava, vaihdaSuoritettu, poistaTehtava } = tehtavalistaSlice.actions;
+export const { lisaaTehtava, poistaTehtava, vaihdaSuoritus, avaaLisaysDialogi, avaaPoistoDialogi } = tehtavalistaSlice.actions;
 
 export default tehtavalistaSlice.reducer;

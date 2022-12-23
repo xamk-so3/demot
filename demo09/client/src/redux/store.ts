@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import tehtavalistaReducer from './tehtavalistaSlice'; 
+import tehtavalistaReducer from './tehtavalistaSlice';
 
 export const store = configureStore({
     reducer : {

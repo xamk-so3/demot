@@ -1,40 +1,37 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useRef } from 'react';
-import {useDispatch} from 'react-redux';
-import { AppDispatch } from '../redux/store';
-import { lisaaTehtava, tallennaTehtavat, Tehtava } from '../redux/tehtavalistaSlice';
+import { useDispatch, useSelector } from 'react-redux/es/exports';
 import { v4 as uuidv4 } from 'uuid';
+import { AppDispatch, RootState } from '../redux/store';
+import { avaaLisaysDialogi, lisaaTehtava, tallennaTehtavat, Tehtava } from '../redux/tehtavalistaSlice';
 
-interface Props {
-  auki : boolean,
-  setAuki : (arg0: boolean) => void
-}
-
-const LisaaTehtava : React.FC<Props> = (props : Props) : React.ReactElement => {
+const LisaaTehtava : React.FC = () : React.ReactElement => {
   
-  const nimiRef : React.MutableRefObject<any> = useRef<HTMLInputElement>();
+  const nimiRef : React.MutableRefObject<HTMLInputElement | undefined> = useRef();
+
+  const lisaysDialogi : boolean = useSelector((state : RootState) => state.tehtavalista.lisaysDialogi);
   const dispatch : AppDispatch = useDispatch();
 
   const kasitteleLisays = () : void => {
 
     let uusiTehtava : Tehtava = {
       id : uuidv4(),
-      nimi : nimiRef.current.value || "(nimetön tehtävä)",
+      nimi : nimiRef.current!.value || "(nimetön tehtävä)",
       suoritettu : false
     } 
 
     dispatch(lisaaTehtava(uusiTehtava));
     dispatch(tallennaTehtavat());
-
-    props.setAuki(false);
+    dispatch(avaaLisaysDialogi(false));
 
   }
 
   return (
     <Dialog
-        open={props.auki}
-        onClose={() => props.setAuki(false)}
+        open={lisaysDialogi}
+        onClose={() => dispatch(avaaLisaysDialogi(false))}
         fullWidth={true}
+        PaperProps={{ sx: { position: "fixed", top: 100} }}
       >
       <DialogTitle>
         Lisää uusi tehtävä
@@ -50,7 +47,7 @@ const LisaaTehtava : React.FC<Props> = (props : Props) : React.ReactElement => {
       </DialogContent>
       <DialogActions>
         <Button onClick={kasitteleLisays}>Lisää</Button>
-        <Button onClick={() => props.setAuki(false)}>Peruuta</Button>
+        <Button onClick={() => dispatch(avaaLisaysDialogi(false))}>Peruuta</Button>
       </DialogActions>
     </Dialog>
   )

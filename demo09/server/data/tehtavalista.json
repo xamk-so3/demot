@@ -1,12 +1,17 @@
 [
   {
-    "id": 1,
+    "id": "4a606aab-351b-4e70-b5c4-8f590d263fcd",
     "nimi": "Käy kaupassa",
     "suoritettu": false
   },
   {
-    "id": 2,
-    "nimi": "Siivoa",
+    "id": "3077b3a4-13d0-4654-93de-10f84414d098",
+    "nimi": "Siivoa jo",
+    "suoritettu": true
+  },
+  {
+    "id": "d991b7db-8975-4854-9ad2-69bf558db0ce",
+    "nimi": "Ulkoiluta koiraa",
     "suoritettu": false
   }
 ]
